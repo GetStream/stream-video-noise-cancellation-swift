@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = "StreamVideoNoiseCancellation"
-  spec.version = "1.0.0"
+  spec.version = "0.0.1"
   spec.summary = "StreamVideoNoiseCancellation iOS SDK"
   spec.description = "StreamVideoNoiseCancellation integration with Krisp"
 
@@ -10,7 +10,7 @@ Pod::Spec.new do |spec|
   spec.social_media_url = "https://getstream.io"
 
   spec.swift_version = '5.6'
-  spec.platform = :ios, '13.0'
+  spec.platform = :ios, '14.0'
   spec.requires_arc = true
 
   spec.framework = 'Foundation'

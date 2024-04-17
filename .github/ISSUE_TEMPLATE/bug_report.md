@@ -17,8 +17,7 @@ assignees: ''
 
 
 ## GetStream Environment
-**GetStream Chat version:**
-**GetStream Chat frameworks:** StreamChat, StreamChatUI
+**GetStream StreamVideoNoiseCancellation version:**
 **iOS version:**
 **Swift version:**
 **Xcode version:**

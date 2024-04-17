@@ -7,7 +7,7 @@ let package = Package(
     name: "StreamVideoNoiseCancellation",
     defaultLocalization: "en",
     platforms: [
-        .iOS(.v13), .macOS(.v11)
+        .iOS(.v14)
     ],
     products: [
         .library(
