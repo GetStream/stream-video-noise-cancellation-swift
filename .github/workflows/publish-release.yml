@@ -27,12 +27,9 @@ jobs:
             VERSION=${BRANCH_NAME#release/}
             echo "RELEASE_VERSION=$VERSION" >> $GITHUB_ENV
           fi
-      - uses: ./.github/actions/xcode-cache
       - uses: ./.github/actions/ruby-cache
       - name: "Fastlane - Publish Release"
         env:
           GITHUB_TOKEN: ${{ secrets.CI_BOT_GITHUB_TOKEN }}
           COCOAPODS_TRUNK_TOKEN: ${{ secrets.COCOAPODS_TRUNK_TOKEN }}
-          MATCH_PASSWORD: ${{ secrets.MATCH_PASSWORD }}
-          APPSTORE_API_KEY: ${{ secrets.APPSTORE_API_KEY }}
         run: bundle exec fastlane publish_release version:${{ env.RELEASE_VERSION }} --verbose
