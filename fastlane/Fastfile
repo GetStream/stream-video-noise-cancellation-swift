@@ -6,6 +6,14 @@ require 'fileutils'
 sdk_name = 'StreamVideoNoiseCancellation'
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-video-noise-cancellation-swift'
 
+before_all do |lane|
+  if is_ci
+    setup_ci
+    ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '180'
+    ENV['FASTLANE_XCODEBUILD_SETTINGS_RETRIES'] = '10'
+  end
+end
+
 lane :publish_release do |options|
   UI.user_error!('You need to pass the release version') if options[:version].nil?
 
