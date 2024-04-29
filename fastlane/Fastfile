@@ -22,10 +22,9 @@ lane :publish_release do |options|
   match_me
   build_xcframework
   compress_xcframework
-  # pod_lint # TODO: enable pods release
+  pod_lint
   update_spm(version: options[:version])
   publish_ios_sdk(
-    skip_pods: true, # TODO: enable pods release
     skip_git_status_check: false,
     version: options[:version],
     sdk_names: [sdk_name],
