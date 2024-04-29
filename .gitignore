@@ -88,16 +88,11 @@ spm_cache/
 .buildcache
 buildcache
 
-# gcloud
-google-cloud-sdk
-gcloud.tar.gz
-gcloud-service-account-key.json
-
-# Ignore Products folder
-Products/
-
-# Ignore private repo
+# Ignore Build Products
 stream-video-noise-cancellation-swift-private/
+Products/
+*.xcframework
+*.zip
 
 # Ignore Dependencies folder
 Dependencies/

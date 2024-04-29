@@ -22,47 +22,44 @@ lane :publish_release do |options|
   match_me
   build_xcframework
   compress_xcframework
-  # pod_lint # TODO: enable pods release
+  pod_lint
   update_spm(version: options[:version])
   publish_ios_sdk(
-    skip_pods: true, # TODO: enable pods release
     skip_git_status_check: false,
     version: options[:version],
     sdk_names: [sdk_name],
     podspec_names: [sdk_name],
     github_repo: github_repo,
     changelog: "#{sdk_name} v#{options[:version]}",
-    upload_assets: ["Products/#{sdk_name}.zip"]
+    upload_assets: ["#{sdk_name}.zip"]
   )
   clean_products
 end
 
 lane :build_xcframework do
-  FileUtils.mkdir_p('../Products')
-  output_directory = File.expand_path("#{Dir.pwd}/../Products")
-  Dir.chdir(output_directory) do
+  team_id = File.read('Matchfile').match(/team_id\("(.*)"\)/)[1]
+  Dir.chdir('..') do
+    output_directory = Dir.pwd
     sh("git clone git@github.com:#{github_repo}-private.git")
+
     Dir.chdir("#{github_repo.split('/').last}-private") do
       sh('make')
       FileUtils.mv("#{sdk_name}.xcframework", "#{output_directory}/#{sdk_name}.xcframework")
     end
+
+    sh("codesign --timestamp -v --sign 'Apple Distribution: Stream.io Inc (#{team_id})' #{sdk_name}.xcframework")
   end
-  team_id = File.read('Matchfile').match(/team_id\("(.*)"\)/)[1]
-  sh("codesign --timestamp -v --sign 'Apple Distribution: Stream.io Inc (#{team_id})' #{output_directory}/#{sdk_name}.xcframework")
 end
 
 lane :compress_xcframework do
   Dir.chdir('..') do
-    FileUtils.cp('LICENSE', 'Products/LICENSE')
-    Dir.chdir('Products') do
-      sh("zip -r #{sdk_name} ./#{sdk_name}.xcframework ./LICENSE")
-    end
+    sh("zip -r #{sdk_name} ./#{sdk_name}.xcframework ./LICENSE")
   end
 end
 
 private_lane :update_spm do |options|
-  checksum = sh("swift package compute-checksum ../Products/#{sdk_name}.zip").strip
   Dir.chdir('..') do
+    checksum = sh("swift package compute-checksum #{sdk_name}.zip").strip
     file_lines = File.readlines('Package.swift')
     file_data = ''
 
@@ -90,7 +87,9 @@ end
 
 lane :clean_products do
   Dir.chdir('..') do
-    sh('rm -rf Products/')
+    ["#{github_repo.split('/').last}-private", '*.xcframework', '*.zip'].each do |product|
+      sh("rm -rf #{product}")
+    end
   end
 end
 
