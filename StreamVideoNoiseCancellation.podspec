@@ -1,6 +1,6 @@
 Pod::Spec.new do |spec|
   spec.name = "StreamVideoNoiseCancellation"
-  spec.version = "0.9.1"
+  spec.version = "1.0.0"
   spec.summary = "StreamVideoNoiseCancellation iOS SDK"
   spec.description = "StreamVideoNoiseCancellation integration with Krisp"
 
