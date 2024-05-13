@@ -27,6 +27,8 @@ lane :publish_release do |options|
   update_spm(version: options[:version])
   push_changes(version: options[:version])
   publish_ios_sdk(
+    skip_pods: true,
+    skip_branch_check: true,
     skip_git_status_check: false,
     version: options[:version],
     sdk_names: [sdk_name],
