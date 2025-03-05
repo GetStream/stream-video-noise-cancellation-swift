@@ -1,27 +1,20 @@
 default_platform :ios
 skip_docs
 
-require 'fileutils'
-
 sdk_name = 'StreamVideoNoiseCancellation'
 github_repo = ENV['GITHUB_REPOSITORY'] || 'GetStream/stream-video-noise-cancellation-swift'
 
 before_all do
-  if is_ci
-    setup_ci
-    ENV['FASTLANE_XCODEBUILD_SETTINGS_TIMEOUT'] = '180'
-    ENV['FASTLANE_XCODEBUILD_SETTINGS_RETRIES'] = '10'
-  end
+  setup_ci if is_ci
 end
 
 lane :publish_release do |options|
   UI.user_error!('You need to pass the release version') if options[:version].nil?
 
-  xcversion(version: '14.0.1') if is_ci
   clean_products
   match_me
-  build_xcframework
-  compress_xcframework
+  file_path = build_xcframework
+  zip_path = zip_xcframework(file_path: file_path)
   pod_lint
   version_bump_podspec(path: "#{sdk_name}.podspec", version_number: options[:version])
   update_spm(version: options[:version])
@@ -33,7 +26,7 @@ lane :publish_release do |options|
     podspec_names: [sdk_name],
     github_repo: github_repo,
     changelog: "#{sdk_name} v#{options[:version]}",
-    upload_assets: ["#{sdk_name}.zip"]
+    upload_assets: [zip_path]
   )
   clean_products
 end
@@ -49,14 +42,16 @@ lane :build_xcframework do
       FileUtils.mv("#{sdk_name}.xcframework", "#{output_directory}/#{sdk_name}.xcframework")
     end
 
+    sh("cp -R LICENSE #{sdk_name}.xcframework/")
     sh("codesign --timestamp -v --sign 'Apple Distribution: Stream.io Inc (#{team_id})' #{sdk_name}.xcframework")
   end
+  File.expand_path("../#{sdk_name}.xcframework")
 end
 
-lane :compress_xcframework do
-  Dir.chdir('..') do
-    sh("zip -r #{sdk_name} ./#{sdk_name}.xcframework ./LICENSE")
-  end
+lane :zip_xcframework do |options|
+  zip_path = "#{options[:file_path]}.zip"
+  sh("ditto -c -k --sequesterRsrc --keepParent #{options[:file_path]} #{zip_path}")
+  zip_path
 end
 
 private_lane :update_spm do |options|
