@@ -18,7 +18,7 @@ let package = Package(
     targets: [
         .binaryTarget(
             name: "StreamVideoNoiseCancellation",
-            url: "https://github.com/GetStream/stream-video-noise-cancellation-swift/releases/download/1.0.2/StreamVideoNoiseCancellation.zip",
+            url: "https://github.com/GetStream/stream-video-noise-cancellation-swift/releases/download/1.0.2/StreamVideoNoiseCancellation.xcframework.zip",
             checksum: "a3c034802e9c74979bd5afce27676aa1e3021dc7d1066eb10cdc24911fd337f3"
         ),
     ]
