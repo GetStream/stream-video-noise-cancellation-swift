@@ -15,7 +15,7 @@ permissions:
 jobs:
   release:
     name: Publish new release
-    runs-on: macos-15
+    runs-on: { group: scaleway-macos }
     steps:
       - name: Generate bot token
         id: bot-token
